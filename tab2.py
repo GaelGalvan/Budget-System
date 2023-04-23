@@ -37,15 +37,12 @@ class HomeTab(CTk):
         self.startFrame = CTkFrame(master = self, width = 0, height = 50)
         self.startFrame.grid_columnconfigure(2, weight = 1)
         self.startFrame.grid(row = 3, column = 0, columnspan = 10, sticky = "NSEW")
-        self.startButton = CTkButton(master = self.startFrame,text="",image=self.startImage, command = self.websearch, width=100, fg_color="transparent")
+        self.startButton = CTkButton(master = self.startFrame,text="",image=self.startImage, command = self.start, width=100, fg_color="transparent")
         self.startButton.grid(row = 0, column = 2, padx = 20, pady = 20)
 
     def start(self):
         HomeTab.quit
         StartTab(isfs, theme, slider, appearance_window)
-    def websearch(self):
-        webbrowser.open_new(r"gaelgalvan12@gmail.com")
-
 # Class which will hold tabs
 class LeftTabbing(CTkTabview):
     def __init__(self, master, width, **kwargs):
