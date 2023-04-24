@@ -205,68 +205,126 @@ class MainPage(CTk):
         #SQL connection
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
-        # Formatting
+
+        # Formatting Home Frame
+        self.HbF = CTkFrame(master = self, corner_radius=0, fg_color="transparent")
+        self.ebf = CTkFrame(master = self, corner_radius=0, fg_color="transparent")
+        self.gbf =  CTkFrame(master = self, corner_radius=0, fg_color="transparent")
+
+
         self.user = user
         self.columnconfigure(0, weight = 1)
         self.topFrame = CTkFrame(master = self, height = 50, width = (self.span))
-        self.topFrame.grid(row = 0, column = 0, columnspan = 3, sticky = "nsew")
-        self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / 3), border_spacing=10, text="Home", fg_color="transparent")
+        self.topFrame.grid(row = 0, column = 0, columnspan = 3, sticky = "snew")
+        self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / 3), border_spacing=10, text="Home", 
+                                    command= self.goHome, fg_color="transparent")
         self.homeButton.grid(row = 0, column = 0)
 
-        self.ExpensesButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3),border_spacing=10, text="Expenses", fg_color="transparent")
+        self.ExpensesButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3),border_spacing=10, command = self.goExpenses, text="Expenses", fg_color="transparent")
         self.ExpensesButton.grid(row = 0, column = 1)
 
-        self.graphButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3), border_spacing=10, text="Graph", fg_color="transparent")
+        self.graphButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3), border_spacing=10, command = self.goGraph, text="Graph", fg_color="transparent")
         self.graphButton.grid(row = 0 , column = 2)
+
+
+
+    
+        self.savingsFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span),fg_color="white", bg_color=theme)
+        self.savingsFrame.grid(row = 1, column = 0, columnspan = 3, sticky = "nsew")
 
         self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
         self.balance = cursor.fetchone()[0]
+        self.balanceLabel1 = CTkLabel(self.savingsFrame, corner_radius=0, text = "Balance:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.balanceLabel1.grid(row = 0, column = 0, padx = 20)
+        self.balanceLabel2 = CTkLabel(self.savingsFrame, corner_radius=0, text=f"${int(self.balance):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.balanceLabel2.grid(row = 0, column = 2, padx = (100, 0), sticky = "e")
 
-
-
-        self.balanceLabel = CTkLabel(self.topFrame, corner_radius = 0, text=f"${int(self.balance):,d}",text_color = "white",  font=CTkFont(family = "bookman", size=50, weight="bold"))
-        self.balanceLabel.grid(row = 2, column = 1) 
-
+        
         self.balance = cursor.execute(f"SELECT SavingBalance FROM userInfo WHERE username = '{self.user}';")
         self.balance = cursor.fetchone()[0]
-
-        self.savingsFrame = CTkFrame(master = self, height = 50, width = (self.span),fg_color="white", bg_color=theme)
-        self.savingsFrame.grid(row = 4, column = 0, columnspan = 3, sticky = "nsew")
         self.savingsLabel1 = CTkLabel(self.savingsFrame, corner_radius=0, text = "Savings:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        self.savingsLabel1.grid(row = 0, column = 0, padx = 20)
+        self.savingsLabel1.grid(row = 1, column = 0, padx = 20)
         self.savingsLabel2 = CTkLabel(self.savingsFrame, corner_radius=0, text=f"${int(self.balance):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        self.savingsLabel2.grid(row = 0, column = 2, padx = (100, 0), sticky = "e")
+        self.savingsLabel2.grid(row = 1, column = 2, padx = (100, 0), sticky = "e")
 
         self.balance = cursor.execute(f"SELECT monthlyIncome FROM userInfo WHERE username = '{self.user}';")
         self.balance = cursor.fetchone()[0]
 
         self.incomeLabel1 = CTkLabel(self.savingsFrame, corner_radius=0, text = "Income:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        self.incomeLabel1.grid(row = 1, column = 0, padx = 20)
+        self.incomeLabel1.grid(row = 2, column = 0, padx = 20)
         self.incomeLabel2 = CTkLabel(self.savingsFrame, corner_radius=0, text=f"${int(self.balance):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        self.incomeLabel2.grid(row = 1, column = 2, padx = (100, 0), sticky = "e")
+        self.incomeLabel2.grid(row = 2, column = 2, padx = (100, 0), sticky = "e")
         
-        self.beginExpenseFrame = CTkFrame(master = self, height = 50, width = (self.span))
+        self.beginExpenseFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span))
         self.beginExpenseFrame.grid(row = 5, column = 0)
         self.ExpenseLabel = CTkLabel(self.beginExpenseFrame, corner_radius = 0, text="Expenses",  font=CTkFont(family = "bookman", size=20, weight="bold"))
         self.ExpenseLabel.grid(row = 2, column = 1) 
         
-        self.balance = cursor.execute(f"SELECT expense_price FROM expenses WHERE username = '{self.user}';")
-        self.expenseName = cursor.execute(f"SELECT expense FROM expenses WHERE username = '{self.user}';")
-
-        self.expenseFrame = CTkFrame(master = self, height = 50, width = (self.span),fg_color="white", bg_color=theme)
+        
+        self.expenseFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span),fg_color="white", bg_color=theme)
         self.expenseFrame.grid(row = 6, column = 0, columnspan = 3, sticky = "nsew")
+        
+        #iterating through expense SQL array
+        self.expenseName = cursor.execute(f"SELECT expense FROM expenses WHERE username = '{self.user}';")
         for i, name in enumerate(self.expenseName):
             self.expenseLabel1 = CTkLabel(self.expenseFrame, corner_radius=0, text = f"{name[0]}:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
             self.expenseLabel1.grid(row = i, column = 0, padx = 20)
+
+        self.balance = cursor.execute(f"SELECT expense_price FROM expenses WHERE username = '{self.user}';")
         for x, money in enumerate(self.balance):
             self.expenseLabel2 = CTkLabel(self.expenseFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
             self.expenseLabel2.grid(row = x, column = 2, padx = (100, 0), sticky = "e")
 
 
-        # self.myframe = MyFrame(master=self)
+        self.beginSubFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span))
+        self.beginSubFrame.grid(row = 7, column = 0)
+        self.subLabel = CTkLabel(self.beginSubFrame, corner_radius = 0, text="Subscriptions",  font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.subLabel.grid(row = 2, column = 1) 
+
+        self.subFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span),fg_color="white", bg_color=theme)
+        self.subFrame.grid(row = 8, column = 0, columnspan = 3, sticky = "nsew")
+
+        # Iterating through subscription SQL array
+        # self.expenseName = cursor.execute(f"SELECT subscription FROM expenses WHERE username = '{self.user}';")
+        # for i, name in enumerate(self.expenseName):
+        #     self.subLabel1 = CTkLabel(self.subFrame, corner_radius=0, text = f"{name[0]}:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        #     self.subLabel1.grid(row = i, column = 0, padx = 20)
+
+        # self.balance = cursor.execute(f"SELECT subscription_price FROM expenses WHERE username = '{self.user}';")
+        # for x, money in enumerate(self.balance):
+        #     self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        #     self.subLabel2.grid(row = x, column = 2, padx = (100, 0), sticky = "e")
+        # # self.myframe = MyFrame(master=self)
         # self.myframe.grid(row=0, column=0, padx = 45)
 
 
+
+
+    def selectFrame(self,name):
+        self.homeButton.configure(fg_color=(theme) if name == "home" else "transparent")
+        self.ExpensesButton.configure(fg_color=(theme) if name == "expenses" else "transparent")
+        self.graphButton.configure(fg_color=(theme) if name == "graph" else "transparent")
+
+                # show selected frame
+        if name == "home":
+            self.HbF.grid(row = 1, column = 0)
+        else:
+            self.HbF.grid_forget()
+        if name == "expenses":
+            self.ebf.grid(row=1, column=0)
+        else:
+            self.ebf.grid_forget()
+        if name == "graph":
+            self.gbf.grid(row=1, column=0)
+        else:
+            self.gbf.grid_forget()
+
+    def goHome(self):
+        self.selectFrame("home")
+    def goExpenses(self):
+        self.selectFrame("expenses")
+    def goGraph(self):
+        self.selectFrame("graph")
 
 
         

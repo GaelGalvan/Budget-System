@@ -204,7 +204,9 @@ class MyRegisterTabs(CTkTabview):
                 for expense in self.expenses:
                     name, price = expense
                     cursor.execute("INSERT INTO expenses (username, expense, expense_price) VALUES (?, ?, ?)", (self.user_username.get(), name, price))
-
+                for sub in self.sublist:
+                    name, price = sub
+                    cursor.execute("INSERT INTO expenses (subscription, subscription_price) VALUES (?, ?)", (name, price))
                 tk.messagebox.showinfo("Success", "Registration successful!")
             
         except ValueError:
