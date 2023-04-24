@@ -22,7 +22,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS user_goals (
 )""")
 cursor.execute("""CREATE TABLE IF NOT EXISTS expenses (
     username text,
-    expense text ,
+    expense text,
     expense_price real,
     subscription text,
     subscription_price real
@@ -72,7 +72,6 @@ class HomeTab(CTk):
         self.destroy()
         # isfs, theme, slider, appearance_window setup 
         page = MainPage(user = user, isfs=isfs, theme=theme, slider=slider, appearance_window=appearance_window)
-        page.resizable(False,False)
         page.mainloop()
 
 # Class which will hold tabs
@@ -98,7 +97,7 @@ class LeftTabbing(CTkTabview):
         self.appearance_option = CTkOptionMenu(master = self.tab("Settings"), values=["Pick","System Default", "Dark", "Light"], command=self.changeAppearance)
         self.appearance_option.grid(row = 1, column = 0, padx = (60,0), pady = (0,20))
 
-        CTkLabel(master = self.tab("Settings"), text = "Fullscreen Upon Starting", font = CTkFont(size = 15)).grid(row = 3, column = 0, padx = (50,0), pady =(20,0))
+        CTkLabel(master = self.tab("Settings"), text = "Fullscreen / Resizable Upon Starting", font = CTkFont(size = 15)).grid(row = 3, column = 0, padx = (50,0), pady =(20,0))
         self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Pick","Yes","No"], command=self.isFullscreen)
         self.color_theme.grid(row = 4, column = 0, padx = (60,0), pady = (0,20))
 
@@ -191,44 +190,105 @@ class MyFrame(CTkFrame):
 class MainPage(CTk):
     def __init__(self, user,isfs, theme, slider, appearance_window):
         super().__init__()
+        # Sets up what was previously set in settings
         set_appearance_mode(appearance_window)
         set_default_color_theme(theme)
         set_widget_scaling(slider)
-        # Sets the window to the desired screen setting
         if (isfs):
             self.winWidth = str(int(self.winfo_screenwidth()))
             self.winHeight = str(int(self.winfo_screenheight()))
             self.geometry(f"{self.winWidth}x{self.winHeight}")
+            self.span = int(self.winWidth)
         else:
-            self.geometry("500x500")
+            self.span = 1200
+            self.geometry("1200x680")
+            self.resizable(False,False)
 
-        self.user = user
-        self.myframe = MyFrame(master=self)
-        self.myframe.grid(row=0, column=0, padx = 45)
-        
+        #SQL connection
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
+        # Formatting
+        self.user = user
+        self.columnconfigure(0, weight = 1)
+        self.topFrame = CTkFrame(master = self, height = 50, width = (self.span))
+        self.topFrame.grid(row = 0, column = 0, columnspan = 3, sticky = "nsew")
+        self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / 3), border_spacing=10, text="Home", fg_color="transparent")
+        self.homeButton.grid(row = 0, column = 0)
+
+        self.ExpensesButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3),border_spacing=10, text="Expenses", fg_color="transparent")
+        self.ExpensesButton.grid(row = 0, column = 1)
+
+        self.graphButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3), border_spacing=10, text="Graph", fg_color="transparent")
+        self.graphButton.grid(row = 0 , column = 2)
+
         self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
         self.balance = cursor.fetchone()[0]
-        
-        CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
-        
+
+
+
+        self.balanceLabel = CTkLabel(self.topFrame, corner_radius = 0, text=f"${int(self.balance):,d}",text_color = "white",  font=CTkFont(family = "bookman", size=50, weight="bold"))
+        self.balanceLabel.grid(row = 2, column = 1) 
+
         self.balance = cursor.execute(f"SELECT SavingBalance FROM userInfo WHERE username = '{self.user}';")
         self.balance = cursor.fetchone()[0]
-       
+
+        self.savingsFrame = CTkFrame(master = self, height = 50, width = (self.span),fg_color="white", bg_color=theme)
+        self.savingsFrame.grid(row = 4, column = 0, columnspan = 3, sticky = "nsew")
+        self.savingsLabel1 = CTkLabel(self.savingsFrame, corner_radius=0, text = "Savings:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.savingsLabel1.grid(row = 0, column = 0, padx = 20)
+        self.savingsLabel2 = CTkLabel(self.savingsFrame, corner_radius=0, text=f"${int(self.balance):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.savingsLabel2.grid(row = 0, column = 2, padx = (100, 0), sticky = "e")
+
+        self.balance = cursor.execute(f"SELECT monthlyIncome FROM userInfo WHERE username = '{self.user}';")
+        self.balance = cursor.fetchone()[0]
+
+        self.incomeLabel1 = CTkLabel(self.savingsFrame, corner_radius=0, text = "Income:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.incomeLabel1.grid(row = 1, column = 0, padx = 20)
+        self.incomeLabel2 = CTkLabel(self.savingsFrame, corner_radius=0, text=f"${int(self.balance):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+        self.incomeLabel2.grid(row = 1, column = 2, padx = (100, 0), sticky = "e")
         
-        CTkLabel(master=self.myframe, text=f" Savings balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=1)
-        CTkButton(master=self.myframe, text="Deposit",command=self.addFunds).grid(pady=25, row=1, column=0)
-        CTkButton(master=self.myframe, text="Withdrawl").grid(row=2, column=0)
-        CTkButton(master = self.myframe,text = "Transfer").grid(row= 1, column = 1)
-        self.goals_frame = MyFrame(master=self)
-        self.goals_frame.grid(row=0, column=1)
-        CTkLabel(master=self.goals_frame, text="Enter your goals:").grid(row=0, column=0)
-        self.goals_entry = CTkEntry(master=self.goals_frame)
-        self.goals_entry.grid(row=1, column=0)
-        CTkButton(master=self.goals_frame, text="Add Goal", command=self.save_goals).grid(row=2, column=0)
+        self.beginExpenseFrame = CTkFrame(master = self, height = 50, width = (self.span))
+        self.beginExpenseFrame.grid(row = 5, column = 0)
+        self.ExpenseLabel = CTkLabel(self.beginExpenseFrame, corner_radius = 0, text="Expenses",  font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.ExpenseLabel.grid(row = 2, column = 1) 
         
-        self.load_goals(user)
+        self.balance = cursor.execute(f"SELECT expense_price FROM expenses WHERE username = '{self.user}';")
+        self.expenseName = cursor.execute(f"SELECT expense FROM expenses WHERE username = '{self.user}';")
+
+        self.expenseFrame = CTkFrame(master = self, height = 50, width = (self.span),fg_color="white", bg_color=theme)
+        self.expenseFrame.grid(row = 6, column = 0, columnspan = 3, sticky = "nsew")
+        for i, name in enumerate(self.expenseName):
+            self.expenseLabel1 = CTkLabel(self.expenseFrame, corner_radius=0, text = f"{name[0]}:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.expenseLabel1.grid(row = i, column = 0, padx = 20)
+        for x, money in enumerate(self.balance):
+            self.expenseLabel2 = CTkLabel(self.expenseFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.expenseLabel2.grid(row = x, column = 2, padx = (100, 0), sticky = "e")
+
+
+        # self.myframe = MyFrame(master=self)
+        # self.myframe.grid(row=0, column=0, padx = 45)
+
+
+
+
+        
+        # CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
+        
+
+    
+        
+        # CTkLabel(master=self.myframe, text=f" Savings balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=1)
+        # CTkButton(master=self.myframe, text="Deposit",command=self.addFunds).grid(pady=25, row=1, column=0)
+        # CTkButton(master=self.myframe, text="Withdrawl").grid(row=2, column=0)
+        # CTkButton(master = self.myframe,text = "Transfer").grid(row= 1, column = 1)
+        # self.goals_frame = MyFrame(master=self)
+        # self.goals_frame.grid(row=0, column=1)
+        # CTkLabel(master=self.goals_frame, text="Enter your goals:").grid(row=0, column=0)
+        # self.goals_entry = CTkEntry(master=self.goals_frame)
+        # self.goals_entry.grid(row=1, column=0)
+        # CTkButton(master=self.goals_frame, text="Add Goal", command=self.save_goals).grid(row=2, column=0)
+        
+        # self.load_goals(user)
         
         # Retrieve expenses from the database'''
         '''
