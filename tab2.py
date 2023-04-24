@@ -1,6 +1,5 @@
 from imports import *
 
-
 connection = sqlite3.connect('data.db')
 cursor = connection.cursor()
 cursor.execute("""CREATE TABLE IF NOT EXISTS userInfo(
@@ -139,7 +138,6 @@ class LeftTabbing(CTkTabview):
         elif mode == 3.0:
             slider = 1.2
 
-        
 
     def setTheme(self, mode : str):
         global theme 
@@ -353,3 +351,5 @@ class MainPage(CTk):
         CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
         
         connection.close()
+
+        #Hello 
