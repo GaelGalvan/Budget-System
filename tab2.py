@@ -72,6 +72,7 @@ class HomeTab(CTk):
         self.destroy()
         # isfs, theme, slider, appearance_window setup 
         page = MainPage(user = user, isfs=isfs, theme=theme, slider=slider, appearance_window=appearance_window)
+        page.resizable(False,False)
         page.mainloop()
 
 # Class which will hold tabs
@@ -128,7 +129,19 @@ class LeftTabbing(CTkTabview):
             isfs = False
     def sliderVal(self, mode : int):
         global slider
-        slider = mode
+        if mode == 0:
+            slider = 0.8
+        elif mode == 0.75:
+            slider = 0.9
+        elif mode == 1.5:
+            slider = 1.0
+        elif mode == 2.25:
+            slider = 1.1
+        elif mode == 3.0:
+            slider = 1.2
+
+        
+
     def setTheme(self, mode : str):
         global theme 
         if mode == "Blue":
@@ -137,7 +150,7 @@ class LeftTabbing(CTkTabview):
             theme =  "green"
         elif mode == "Dark Blue":
             theme = "dark-blue"
-
+            
 
 class RightTabbing(CTkTabview):
     def __init__(self, master, width, **kwargs):
@@ -170,15 +183,6 @@ class RightTabbing(CTkTabview):
 
         CTkLabel(master = self.tab("More Info"), text = "David Garza:", font = CTkFont(size = 15)).grid(row = 4, column = 0, padx = (40,0), pady = (20,0))
         CTkLabel(master = self.tab("More Info"), text="dgarz321@gmail.com",font= CTkFont(size=15, underline=True)).grid(row = 4, column = 1, padx = (10,0), pady = (20,0))
-class StartTab(CTk):
-    def __init__(self, isFullScreen, CTheme, slider, appearance):
-        super().__init__()
-        print(f"Fullscreen: {isFullScreen}, Theme: {CTheme}, Slider: {slider}, Appearance: {appearance}")
-        self.title("Budgeter")
-        self.geometry("1100x580")
-        self.grid_columnconfigure((0,1,2,3), weight=1)
-        self.grid_rowconfigure((1), weight=1)
-
 
 class MyFrame(CTkFrame):
     def __init__(self, master, **kwargs):
@@ -187,12 +191,17 @@ class MyFrame(CTkFrame):
 class MainPage(CTk):
     def __init__(self, user,isfs, theme, slider, appearance_window):
         super().__init__()
+        set_appearance_mode(appearance_window)
+        set_default_color_theme(theme)
+        set_widget_scaling(slider)
+        # Sets the window to the desired screen setting
         if (isfs):
             self.winWidth = str(int(self.winfo_screenwidth()))
             self.winHeight = str(int(self.winfo_screenheight()))
             self.geometry(f"{self.winWidth}x{self.winHeight}")
         else:
             self.geometry("500x500")
+
         self.user = user
         self.myframe = MyFrame(master=self)
         self.myframe.grid(row=0, column=0, padx = 45)

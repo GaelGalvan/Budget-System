@@ -84,7 +84,6 @@ class Login(CTk):
             # If the result is not None, the username and password are correct
             self.destroy()
             page = HomeTab(username = username)
-            page.resizable(False,False)
             page.mainloop()
         else:
             tk.messagebox.showinfo('Error', 'Incorrect Username or Password')
