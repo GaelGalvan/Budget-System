@@ -1,13 +1,40 @@
-import tkinter as tk
-from tkinter import ttk
-import os
-from tkinter import messagebox
-from customtkinter import *
-from PIL import Image   
-height = 500
+from imports import *
+
+
+connection = sqlite3.connect('data.db')
+cursor = connection.cursor()
+cursor.execute("""CREATE TABLE IF NOT EXISTS userInfo(
+    username text,
+    password text,
+    first_name text,
+    last_name text,
+    pronoun text,
+    age integer,
+    accountBalance real,
+    savingBalance real,
+    monthlyIncome real
+    
+)""")
+
+cursor.execute("""CREATE TABLE IF NOT EXISTS user_goals (
+    username text,
+    goal text 
+)""")
+cursor.execute("""CREATE TABLE IF NOT EXISTS expenses (
+    username text,
+    expense text ,
+    expense_price real,
+    subscription text,
+    subscription_price real
+)""")
+connection.commit()
+connection.close()
+
 
 class HomeTab(CTk):
-    def __init__(self):
+    def __init__(self,username):
+        height = 500
+        self.user = username
         super().__init__()
         self.title("Budget Home")
         self.geometry("1200x680")
@@ -33,7 +60,7 @@ class HomeTab(CTk):
         self.tabView2 = RightTabbing(master = self.tabLeftFrame, width= 300).grid(row = 1, column = 5, padx = (20,0), sticky = "nsew")
 
         #Start Button  
-        self.startImage = CTkImage(dark_image=Image.open(os.path.join(image_path, "StartButton.png")), size=(150, 150))
+        self.startImage = CTkImage(Image.open(os.path.join(image_path, "StartButton.png")), size=(150, 150))
         self.startFrame = CTkFrame(master = self, width = 0, height = 50)
         self.startFrame.grid_columnconfigure(2, weight = 1)
         self.startFrame.grid(row = 3, column = 0, columnspan = 10, sticky = "NSEW")
@@ -41,12 +68,16 @@ class HomeTab(CTk):
         self.startButton.grid(row = 0, column = 2, padx = 20, pady = 20)
 
     def start(self):
-        HomeTab.quit
-        StartTab(isfs, theme, slider, appearance_window)
+        user = self.user
+        self.destroy()
+        # isfs, theme, slider, appearance_window setup 
+        page = MainPage(user = user, isfs=isfs, theme=theme, slider=slider, appearance_window=appearance_window)
+        page.mainloop()
+
 # Class which will hold tabs
 class LeftTabbing(CTkTabview):
     def __init__(self, master, width, **kwargs):
-        super().__init__(master, width, height, **kwargs)
+        super().__init__(master, width, height = 500, **kwargs)
 
         # All tabs
         self.add("Home")
@@ -110,7 +141,7 @@ class LeftTabbing(CTkTabview):
 
 class RightTabbing(CTkTabview):
     def __init__(self, master, width, **kwargs):
-        super().__init__(master, width, height, **kwargs)
+        super().__init__(master, width, height = 500, **kwargs)
 
         #All tabs
         self.add("Purpose")
@@ -148,7 +179,108 @@ class StartTab(CTk):
         self.grid_columnconfigure((0,1,2,3), weight=1)
         self.grid_rowconfigure((1), weight=1)
 
-if __name__ == "__main__":
-    app = HomeTab()
-    app.resizable(False,False)
-    app.mainloop()
+
+class MyFrame(CTkFrame):
+    def __init__(self, master, **kwargs):
+        super().__init__(master, **kwargs)
+
+class MainPage(CTk):
+    def __init__(self, user,isfs, theme, slider, appearance_window):
+        super().__init__()
+        if (isfs):
+            self.winWidth = str(int(self.winfo_screenwidth()))
+            self.winHeight = str(int(self.winfo_screenheight()))
+            self.geometry(f"{self.winWidth}x{self.winHeight}")
+        else:
+            self.geometry("500x500")
+        self.user = user
+        self.myframe = MyFrame(master=self)
+        self.myframe.grid(row=0, column=0, padx = 45)
+        
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
+        self.balance = cursor.fetchone()[0]
+        
+        CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
+        
+        self.balance = cursor.execute(f"SELECT SavingBalance FROM userInfo WHERE username = '{self.user}';")
+        self.balance = cursor.fetchone()[0]
+       
+        
+        CTkLabel(master=self.myframe, text=f" Savings balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=1)
+        CTkButton(master=self.myframe, text="Deposit",command=self.addFunds).grid(pady=25, row=1, column=0)
+        CTkButton(master=self.myframe, text="Withdrawl").grid(row=2, column=0)
+        CTkButton(master = self.myframe,text = "Transfer").grid(row= 1, column = 1)
+        self.goals_frame = MyFrame(master=self)
+        self.goals_frame.grid(row=0, column=1)
+        CTkLabel(master=self.goals_frame, text="Enter your goals:").grid(row=0, column=0)
+        self.goals_entry = CTkEntry(master=self.goals_frame)
+        self.goals_entry.grid(row=1, column=0)
+        CTkButton(master=self.goals_frame, text="Add Goal", command=self.save_goals).grid(row=2, column=0)
+        
+        self.load_goals(user)
+        
+        # Retrieve expenses from the database'''
+        '''
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        expenses = cursor.execute(f"SELECT expense FROM expenses WHERE username = '{self.user}';").fetchall()
+        
+        connection.close()
+        # Format and display expenses
+        CTkLabel(master=self.myframe, text=f"Expenses: \n").grid(pady = 25, row=4, column=0)
+        for i , expense in enumerate(expenses, 4):
+            CTkLabel(master = self.myframe, text = f"{expense}").grid(row = i, column = 0)'''
+          
+
+        
+   
+        
+        
+    def save_goals(self):
+        goal = self.goals_entry.get()
+        if goal:
+            connection = sqlite3.connect('data.db')
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO user_goals (username, goal) VALUES (?, ?)", (self.user, goal))
+            connection.commit()
+            connection.close()
+            self.load_goals(self.user)
+            self.goals_entry.delete(0, 'end')
+        
+    def load_goals(self, user):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        goals = cursor.execute(f"SELECT goal FROM user_goals WHERE username = '{user}';").fetchall()
+        connection.close()
+        for i, goal in enumerate(goals):
+            CTkLabel(master=self.goals_frame, text=f"{i+1}. {goal[0]}").grid(row=i+3, column=0)
+
+    def addFunds(self):
+        win = CTkToplevel(self)
+        win.geometry("300x300")
+        
+        CTkLabel(master = win, text = "How much would you like to deposit? ").pack()
+        deposit = CTkEntry(master = win)
+        deposit.pack()
+        
+        
+        def help():
+            connection = sqlite3.connect('data.db')
+            cursor = connection.cursor()    
+            amount = deposit.get()
+            current_balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}").fetchone()
+            new_balance = current_balance+amount
+            cursor.execute(f"UPDATE userInfo SET accountBalance = {new_balance} WHERE username = '{self.user}';")
+            connection.close()
+            
+        CTkButton(master = win , text = "Deposit", command = help).pack()
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
+        self.balance = cursor.fetchone()[0]
+        
+        CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
+        
+        connection.close()

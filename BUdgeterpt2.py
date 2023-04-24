@@ -21,9 +21,7 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS userPass(
 )""")
 
 
-def main():
-    app = App()
-    app.mainloop()
+
 class MyFrame(CTkFrame):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
@@ -216,6 +214,3 @@ class MyRegisterTabs(CTkTabview):
         connection.commit()
         connection.close()
         
-
-
-main()

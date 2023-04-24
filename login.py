@@ -1,5 +1,26 @@
 import tkinter as tk
+import sqlite3
 from tkinter import ttk
+
+# Database connection
+conn = sqlite3.connect('users.db')
+c = conn.cursor()
+
+c.execute('''CREATE TABLE IF NOT EXISTS users
+             (id INTEGER PRIMARY KEY AUTOINCREMENT,
+              first_name TEXT,
+              last_name TEXT,
+              age INTEGER,
+              pronouns TEXT,
+              email TEXT,
+              subscription_name TEXT,
+              subscription_price INTEGER,
+              expense_name TEXT,
+              expense_price INTEGER,
+              monthly_income INTEGER,
+              bank_balance INTEGER,
+              username TEXT,
+              password TEXT)''')
 
 # Window
 root = tk.Tk()
@@ -39,6 +60,35 @@ tabControl.pack(expand=1, fill="both")
 # Needs to be on another file
 # Functions for new pages
 def open_registrationPage():
+    def register_user():
+        # Input values
+        first_name = first_entry.get()
+        last_name = last_entry.get()
+        age = int(age_entry.get())
+        pronouns = pro_entry.get()
+        email = email_entry.get()
+        subscription_name = name_entry.get()
+        subscription_price = int(price_entry.get())
+        expense_name = exName_entry.get()
+        expense_price = int(exPrice_entry.get())
+        monthly_income = int(income_entry.get())
+        bank_balance = int(balance_entry.get())
+        username = username_entry.get()
+        password = password_entry.get()
+
+        # Inserting to database
+        c.execute('''INSERT INTO users
+                     (first_name, last_name, age, pronouns, email, subscription_name, subscription_price,
+                      expense_name, expense_price, monthly_income, bank_balance, username, password)
+                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)''',
+                  (first_name, last_name, age, pronouns, email, subscription_name, subscription_price,
+                   expense_name, expense_price, monthly_income, bank_balance, username, password))
+
+        conn.commit()
+        conn.close()
+        # Close window
+        new_window.destroy()
+
     new_window = tk.Toplevel(root)
     new_window.geometry("847x650")
     new_window.title("Registration Page")
@@ -136,8 +186,11 @@ def open_registrationPage():
     tabControl.pack(expand=1, fill="both")
 
     # Submit button
-    submit_button = tk.Button(new_window, text="Register", bg="#F27D42", font=("Arial", 16), height=2, width=15)
+    submit_button = tk.Button(new_window, command=register_user, text="Register", bg="#F27D42", font=("Arial", 16), height=2, width=15)
     submit_button.pack(pady=20)
+
+
+
 
 def open_loginPage():
     new_window = tk.Toplevel(root)
