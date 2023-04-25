@@ -284,20 +284,21 @@ class MainPage(CTk):
         self.subFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span),fg_color="white", bg_color=theme)
         self.subFrame.grid(row = 8, column = 0, columnspan = 3, sticky = "nsew")
 
-        # Iterating through subscription SQL array
-        # self.expenseName = cursor.execute(f"SELECT subscription FROM expenses WHERE username = '{self.user}';")
-        # for i, name in enumerate(self.expenseName):
-        #     self.subLabel1 = CTkLabel(self.subFrame, corner_radius=0, text = f"{name[0]}:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        #     self.subLabel1.grid(row = i, column = 0, padx = 20)
+        #Iterating through subscription SQL array
+        self.expenseName = cursor.execute(f"SELECT subscription FROM expenses WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expenseName):
+            self.subLabel1 = CTkLabel(self.subFrame, corner_radius=0, text = f"{name[0]}:", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.subLabel1.grid(row = i, column = 0, padx = 20)
 
-        # self.balance = cursor.execute(f"SELECT subscription_price FROM expenses WHERE username = '{self.user}';")
-        # for x, money in enumerate(self.balance):
-        #     self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
-        #     self.subLabel2.grid(row = x, column = 2, padx = (100, 0), sticky = "e")
-        # # self.myframe = MyFrame(master=self)
-        # self.myframe.grid(row=0, column=0, padx = 45)
+        self.balance = cursor.execute(f"SELECT subscription_price FROM expenses WHERE username = '{self.user}';")
+        for x, money in enumerate(self.balance):
+            self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="black",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.subLabel2.grid(row = x, column = 2, padx = (100, 0), sticky = "e")
 
 
+
+        # Expenses Tab Formatting
+        
 
 
     def selectFrame(self,name):
