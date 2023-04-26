@@ -24,6 +24,7 @@ class App(CTk):
         
         CTkButton(master = self.my_frame, text = "Login", command=self.login).grid(padx = 150,pady=20, row = 1, column=0)
         CTkButton(master = self.my_frame, text = "Register", command=self.register).grid(padx = 100,pady=10,row = 2, column=0)
+
     def show(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
