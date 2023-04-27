@@ -211,8 +211,10 @@ class MainPage(CTk):
             self.winHeight = str(int(self.winfo_screenheight()))
             self.geometry(f"{self.winWidth}x{self.winHeight}")
             self.span = int(self.winWidth)
+            self.y = int(self.winHeight)
         else:
             self.span = 1200
+            self.y = 680
             self.geometry("1200x680")
             self.resizable(False,False)
 
@@ -221,8 +223,8 @@ class MainPage(CTk):
         cursor = connection.cursor()
 
         # Formatting Home Frame
-        self.HbF = CTkFrame(master = self, corner_radius=0, fg_color="transparent")
-        self.ebf = CTkFrame(master = self, corner_radius=0, fg_color="transparent")
+        self.HbF = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=self.y)
+        self.ebf = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=self.y)
         self.gbf =  CTkFrame(master = self, corner_radius=0, fg_color="transparent")
 
 
@@ -230,14 +232,14 @@ class MainPage(CTk):
         self.columnconfigure(0, weight = 1)
         self.topFrame = CTkFrame(master = self, height = 50, width = (self.span))
         self.topFrame.grid(row = 0, column = 0, columnspan = 3, sticky = "nsew")
-        self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / 3), border_spacing=10, text="Home", 
+        self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / (3*slider)), border_spacing=10, text="Home", 
                                     command= self.goHome, fg_color="transparent")
         self.homeButton.grid(row = 0, column = 0)
 
-        self.ExpensesButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3),border_spacing=10, command = self.goExpenses, text="Change Values", fg_color="transparent")
+        self.ExpensesButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / (3*slider)),border_spacing=10, command = self.goExpenses, text="Change Values", fg_color="transparent")
         self.ExpensesButton.grid(row = 0, column = 1)
 
-        self.graphButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / 3), border_spacing=10, command = self.goGraph, text="Graph", fg_color="transparent")
+        self.graphButton = CTkButton(self.topFrame, corner_radius=0, height=40, width = (self.span / (3*slider)), border_spacing=10, command = self.goGraph, text="Graph", fg_color="transparent")
         self.graphButton.grid(row = 0 , column = 2)
 
 
@@ -357,7 +359,7 @@ class MainPage(CTk):
         # Set Income
         self.IncomeFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
         self.IncomeFrame.grid(row = 2, column = 0, sticky = 'w', pady = 10)
-        self.IncomeLabel = CTkLabel(master = self.IncomeFrame, corner_radius=0, text = " Set Income:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.IncomeLabel = CTkLabel(master = self.IncomeFrame, corner_radius=0, text = "Set Income:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
         self.IncomeLabel.grid(row = 1, column = 0, sticky = "e")
         self.IncomeEntry = CTkEntry(master = self.IncomeFrame)
         self.IncomeEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew')
