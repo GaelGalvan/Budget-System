@@ -202,10 +202,12 @@ class MyRegisterTabs(CTkTabview):
                 cursor.execute("INSERT INTO userInfo VALUES (?,?,?, ?, ?, ?, ?, ?, ?)", values)
 
                 # save the expenses to a table
-                for (expense, sub) in itertools.zip_longest(self.expenses,self.sublist):
+                for expense in self.expenses:
                     name, price = expense
-                    sname,sprice = sub
-                    cursor.execute("INSERT INTO expenses (username, expense, expense_price, subscription, subscription_price) VALUES (?, ?, ?, ?, ?)", (self.user_username.get(), name, price, sname, sprice))
+                    cursor.execute("INSERT INTO exp (username, expense, expense_price) VALUES (?, ?, ?)", (self.user_username.get(), name, price))
+                for sub in self.sublist:
+                    name, price = sub
+                    cursor.execute("INSERT INTO subs (username, subscription, subscription_price) VALUES (?, ?, ?)", (self.user_username.get(), name, price))
                 tk.messagebox.showinfo("Success", "Registration successful!")
             
         except ValueError:
