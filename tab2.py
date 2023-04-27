@@ -39,6 +39,10 @@ cursor.execute("""CREATE TABLE IF NOT EXISTS exp (
 connection.commit()
 connection.close()
 
+appearance_window = "System"
+isfs = True
+slider = 1.0
+theme  = "blue"
 
 class HomeTab(CTk):
     def __init__(self,username):
@@ -57,7 +61,6 @@ class HomeTab(CTk):
         # Left Frame
         self.userName = cursor.execute(f"SELECT first_name FROM userInfo WHERE username = '{self.user}';")
         self.userName = cursor.fetchone()[0]
-
         self.welcomeLabel = CTkLabel(master = self, text=f"Welcome To The Budgeter {self.userName}", font = CTkFont(size = 30, weight = "bold")).grid(row = 0, column = 1, sticky = "nsew")
         self.tabLeftFrame = CTkFrame(master = self, width = 250).grid(row = 1, column = 0, padx = (0,20), sticky = "nsew")
         self.tabView = LeftTabbing(master = self.tabLeftFrame, width= 300).grid(row = 1, column = 0, padx = (0,20), sticky = "nsew")
@@ -107,15 +110,15 @@ class LeftTabbing(CTkTabview):
 
         # Settings Configuration
         CTkLabel(master = self.tab("Settings"), text = "Set Apperance Option", font = CTkFont(size = 15)).grid(row = 0, column = 0, padx = (50,0), pady = (20,0))
-        self.appearance_option = CTkOptionMenu(master = self.tab("Settings"), values=["Pick","System Default", "Dark", "Light"], command=self.changeAppearance)
+        self.appearance_option = CTkOptionMenu(master = self.tab("Settings"), values=["System Default", "Dark", "Light"], command=self.changeAppearance)
         self.appearance_option.grid(row = 1, column = 0, padx = (60,0), pady = (0,20))
 
         CTkLabel(master = self.tab("Settings"), text = "Fullscreen / Resizable", font = CTkFont(size = 15)).grid(row = 3, column = 0, padx = (50,0), pady =(20,0))
-        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Pick","Yes","No"], command=self.isFullscreen)
+        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Yes","No"], command=self.isFullscreen)
         self.color_theme.grid(row = 4, column = 0, padx = (60,0), pady = (0,20))
 
         CTkLabel(master = self.tab("Settings"), text = "Color Theme", font = CTkFont(size = 15)).grid(row = 5, column = 0, padx = (50,0), pady = (20,0))
-        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Pick","Blue","Green", "Dark Blue"], command=self.setTheme)
+        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Blue","Green", "Dark Blue"], command=self.setTheme)
         self.color_theme.grid(row = 6, column = 0, padx = (60,0), pady = (0,20))
 
         CTkLabel(master = self.tab("Settings"), text = "Scaling", font = CTkFont(size = 15)).grid(row = 8, column = 0, padx = (50,0), pady = (20,0))
@@ -125,22 +128,17 @@ class LeftTabbing(CTkTabview):
 
 
     def changeAppearance (self, mode : str):
-        global appearance_window
-        if mode == "Pick":
-            pass
         if mode == "System Default":
             appearance_window = "System"
         else:
             appearance_window = mode
      
     def isFullscreen(self, mode : str):
-        global isfs
         if mode == "Yes":
             isfs = True
         else:
             isfs = False
     def sliderVal(self, mode : int):
-        global slider
         if mode == 0:
             slider = 0.8
         elif mode == 0.75:
@@ -154,7 +152,6 @@ class LeftTabbing(CTkTabview):
 
 
     def setTheme(self, mode : str):
-        global theme 
         if mode == "Blue":
             theme = "blue"
         elif mode == "Green":
