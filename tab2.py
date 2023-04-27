@@ -110,7 +110,7 @@ class LeftTabbing(CTkTabview):
         self.appearance_option = CTkOptionMenu(master = self.tab("Settings"), values=["Pick","System Default", "Dark", "Light"], command=self.changeAppearance)
         self.appearance_option.grid(row = 1, column = 0, padx = (60,0), pady = (0,20))
 
-        CTkLabel(master = self.tab("Settings"), text = "Fullscreen / Resizable Upon Starting", font = CTkFont(size = 15)).grid(row = 3, column = 0, padx = (50,0), pady =(20,0))
+        CTkLabel(master = self.tab("Settings"), text = "Fullscreen / Resizable", font = CTkFont(size = 15)).grid(row = 3, column = 0, padx = (50,0), pady =(20,0))
         self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Pick","Yes","No"], command=self.isFullscreen)
         self.color_theme.grid(row = 4, column = 0, padx = (60,0), pady = (0,20))
 
