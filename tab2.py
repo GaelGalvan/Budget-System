@@ -111,7 +111,7 @@ class LeftTabbing(CTkTabview):
         self.color_theme.grid(row = 4, column = 0, padx = (60,0), pady = (0,20))
 
         CTkLabel(master = self.tab("Settings"), text = "Color Theme", font = CTkFont(size = 15)).grid(row = 5, column = 0, padx = (50,0), pady = (20,0))
-        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Blue","Green", "Dark Blue"], command=self.setTheme)
+        self.color_theme = CTkOptionMenu(master = self.tab("Settings"), values = ["Blue","Green"], command=self.setTheme)
         self.color_theme.grid(row = 6, column = 0, padx = (60,0), pady = (0,20))
 
         CTkLabel(master = self.tab("Settings"), text = "Scaling", font = CTkFont(size = 15)).grid(row = 8, column = 0, padx = (50,0), pady = (20,0))
@@ -217,14 +217,15 @@ class MainPage(CTk):
         cursor = connection.cursor()
 
         # Formatting Home Frame
-        self.HbF = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider))
-        self.ebf = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider))
+        self.HbF = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider), scrollbar_button_hover_color=theme)
+        self.ebf = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider), scrollbar_button_hover_color=theme)
         self.gbf =  CTkFrame(master = self, corner_radius=0, fg_color="transparent")
 
         # Tabs
         self.user = user
         self.columnconfigure(0, weight = 1)
-        self.topFrame = CTkFrame(master = self, height = 50, width = (self.span))
+
+        self.topFrame = CTkScrollableFrame(master = self, height = 50, width = (self.span), orientation= "horizontal", scrollbar_button_hover_color=theme)
         self.topFrame.grid(row = 0, column = 0, columnspan = 3, sticky = "nsew")
         self.homeButton = CTkButton(self.topFrame, corner_radius=0, height=40,width = (self.span / (3*slider)), border_spacing=10, text="Home", 
                                     command= self.goHome, fg_color="transparent")
