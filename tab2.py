@@ -269,7 +269,7 @@ class MainPage(CTk):
         self.incomeLabel2.grid(row = 3, column = 2, padx = (100, 0), sticky = "e")
         
         self.beginExpenseFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span), fg_color="transparent")
-        self.beginExpenseFrame.grid(row = 3, column = 0)
+        self.beginExpenseFrame.grid(row = 3, column = 0, pady = (50,0))
         self.ExpenseLabel = CTkLabel(self.beginExpenseFrame, corner_radius = 0, text="Expenses",  font=CTkFont(family = "bookman", size=20, weight="bold"), bg_color="transparent")
         self.ExpenseLabel.grid(row = 1, column = 1) 
         
@@ -288,7 +288,7 @@ class MainPage(CTk):
             self.expenseLabel2.grid(row = (x), column = 2, padx = (100, 0), sticky = "e")
 
         self.beginSubFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span), bg_color="transparent")
-        self.beginSubFrame.grid(row = 6, column = 0)
+        self.beginSubFrame.grid(row = 6, column = 0, pady = (50,0))
         self.subLabel = CTkLabel(self.beginSubFrame, corner_radius = 0, text="Subscriptions",  font=CTkFont(family = "bookman", size=20, weight="bold"), bg_color="transparent")
         self.subLabel.grid(row = 1, column = 1) 
 
