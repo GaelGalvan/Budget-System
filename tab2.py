@@ -313,76 +313,74 @@ class MainPage(CTk):
         # Expenses Tab Formatting
 
         # Set Balance
-        self.sBalanceFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
-        self.sBalanceFrame.grid(row = 0, column = 0, sticky = 'w', pady = 10)
-        self.SbalanceLabel = CTkLabel(master = self.sBalanceFrame, corner_radius=0, text = "Set Balance:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.SbalanceLabel.grid(row = 1, column = 0, sticky = 'nsew')
-        self.SbalanceEntry = CTkEntry(master = self.sBalanceFrame)
-        self.SbalanceEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew')
-        self.SbalanceButtom = CTkButton(master = self.sBalanceFrame, text = "Submit", command = self.changeBal, width=100)
-        self.SbalanceButtom.grid(row = 1, column = 3, padx = (20,0 ))
+        self.SetFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
+        self.SetFrame.grid(row = 0, column = 0, sticky = 'nsew', pady = 10)
+
+        self.SbalanceLabel = CTkLabel(master = self.SetFrame, corner_radius=0, text = "Set Balance:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.SbalanceLabel.grid(row = 1, column = 0, sticky = 'nsew', pady = 20)
+        self.SbalanceEntry = CTkEntry(master = self.SetFrame)
+        self.SbalanceEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew', pady = 20)
+        self.SbalanceButtom = CTkButton(master = self.SetFrame, text = "Submit", command = self.changeBal, width=100)
+        self.SbalanceButtom.grid(row = 1, column = 3, padx = (20,0 ), pady = 20)
         
         # Set Savings
-        self.savingsFrame1 = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
-        self.savingsFrame1.grid(row = 1, column = 0, sticky = 'w', pady = 10)
-        self.savingsLabel = CTkLabel(master = self.savingsFrame1, corner_radius=0, text = "Set Savings:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.savingsLabel.grid(row = 1, column = 0, sticky = "e")
-        self.savingsEntry = CTkEntry(master = self.savingsFrame1)
-        self.savingsEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew')
-        self.savingsButtom = CTkButton(master = self.savingsFrame1, text = "Submit", command = self.changeSav, width=100)
-        self.savingsButtom.grid(row = 1, column = 3, padx = (20,0 ))
+        self.savingsLabel = CTkLabel(master = self.SetFrame, corner_radius=0, text = "Set Savings:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.savingsLabel.grid(row = 2, column = 0, sticky = "nsew", pady = 20)
+        self.savingsEntry = CTkEntry(master = self.SetFrame)
+        self.savingsEntry.grid(row = 2, column = 2, padx = (20, 0), sticky = 'nsew', pady = 20)
+        self.savingsButtom = CTkButton(master = self.SetFrame, text = "Submit", command = self.changeSav, width=100)
+        self.savingsButtom.grid(row = 2, column = 3, padx = (20,0 ), pady = 20)
 
         # Set Income
-        self.IncomeFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
-        self.IncomeFrame.grid(row = 2, column = 0, sticky = 'w', pady = 10)
-        self.IncomeLabel = CTkLabel(master = self.IncomeFrame, corner_radius=0, text = "Set Income:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.IncomeLabel.grid(row = 1, column = 0, sticky = "e")
-        self.IncomeEntry = CTkEntry(master = self.IncomeFrame)
-        self.IncomeEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew')
-        self.IncomeButtom = CTkButton(master = self.IncomeFrame, text = "Submit", command = self.changeInc, width=100)
-        self.IncomeButtom.grid(row = 1, column = 3, padx = (20,0 ))
+        self.IncomeLabel = CTkLabel(master = self.SetFrame, corner_radius=0, text = "Set Income:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.IncomeLabel.grid(row = 3, column = 0, sticky = "w", pady = 20)
+        self.IncomeEntry = CTkEntry(master = self.SetFrame)
+        self.IncomeEntry.grid(row = 3, column = 2, padx = (20, 0), sticky = 'nsew', pady = 20)
+        self.IncomeButtom = CTkButton(master = self.SetFrame, text = "Submit", command = self.changeInc, width=100)
+        self.IncomeButtom.grid(row = 3, column = 3, padx = (20,0 ), pady = 20)
 
         # add Subscriptions
-        self.InsertSubFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
-        self.InsertSubFrame.grid(row = 3, column = 0, sticky = 'nsew', pady = (20,0))
-        self.subLabel = CTkLabel(master = self.InsertSubFrame, corner_radius=0, text = "Insert Subscription (name / price)", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.InsertFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
+        self.InsertFrame.grid(row = 2, column = 0, sticky = 'nsew', pady = (20,0))
+
+        self.subLabel = CTkLabel(master = self.InsertFrame, corner_radius=0, text = "Insert Subscription (name / price)", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
         self.subLabel.grid(row = 0, column = 2, sticky = 'nsew', pady = (0,20))
-        self.nameEntry = CTkEntry(master = self.InsertSubFrame)
+        self.nameEntry = CTkEntry(master = self.InsertFrame)
         self.nameEntry.grid(row = 1, column = 1, sticky = 'e')
-        self.priceEntry = CTkEntry(master = self.InsertSubFrame)
+        self.priceEntry = CTkEntry(master = self.InsertFrame)
         self.priceEntry.grid(row = 1, column = 3, sticky = 'w')
-        self.SubButton = CTkButton(master = self.InsertSubFrame, text = "Submit", command = self.changeSub, width=100)
+        self.SubButton = CTkButton(master = self.InsertFrame, text = "Submit", command = self.changeSub, width=100)
         self.SubButton.grid(row = 2 , column = 2)
 
         # add Expenses
-        self.InsertExFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
-        self.InsertExFrame.grid(row = 4, column = 0, sticky = 'nsew', pady = (20,0))
-        self.ExLabel = CTkLabel(master = self.InsertExFrame, corner_radius=0, text = "Insert Expense (name / price)", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.ExLabel.grid(row = 0, column = 2, sticky = 'nsew', pady = (0,20))
-        self.ExnameEntry = CTkEntry(master = self.InsertExFrame)
-        self.ExnameEntry.grid(row = 1, column = 1, sticky = 'e')
-        self.ExpriceEntry = CTkEntry(master = self.InsertExFrame)
-        self.ExpriceEntry.grid(row = 1, column = 3, sticky = 'w')
-        self.ExButton = CTkButton(master = self.InsertExFrame, text = "Submit", command = self.changeEx, width=100)
-        self.ExButton.grid(row = 2 , column = 2)
+        self.ExLabel = CTkLabel(master = self.InsertFrame, corner_radius=0, text = "Insert Expense (name / price)", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.ExLabel.grid(row = 3, column = 2, sticky = 'nsew', pady = (0,20))
+        self.ExnameEntry = CTkEntry(master = self.InsertFrame)
+        self.ExnameEntry.grid(row = 4, column = 1, sticky = 'e')
+        self.ExpriceEntry = CTkEntry(master = self.InsertFrame)
+        self.ExpriceEntry.grid(row = 4, column = 3, sticky = 'w')
+        self.ExButton = CTkButton(master = self.InsertFrame, text = "Submit", command = self.changeEx, width=100)
+        self.ExButton.grid(row = 5 , column = 2, pady = (0,20))
 
         # deletion 
         self.deleteFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
         self.deleteFrame.grid(row = 5,column = 0, sticky = 'nsew', pady = (20,0))
         self.delLabel = CTkLabel(master = self.deleteFrame, corner_radius=0, text = "Delete Items", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.delLabel.grid(row = 0, column = 2, sticky = 'nsew', pady = (0,20))
+        self.delLabel.grid(row = 0, column = 2, sticky = 'nsew')
+
         self.subdelLabel = CTkLabel(master = self.deleteFrame, corner_radius=0, text = "Subscription Name:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.subdelLabel.grid(row  = 1, column = 0, sticky = 'w', pady = 10)
+        self.subdelLabel.grid(row  = 1, column = 0, sticky = 'w', pady = 20)
         self.subdelEntry = CTkEntry(master = self.deleteFrame)
-        self.subdelEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew')
+        self.subdelEntry.grid(row = 1, column = 2, padx = (20, 0), sticky = 'nsew', pady = 20)
         self.subdelButtom = CTkButton(master = self.deleteFrame, text = "Delete", command = self.rmSub, width=100)
-        self.subdelButtom.grid(row = 1, column = 3, padx = (20,0 ))
+        self.subdelButtom.grid(row = 1, column = 3, padx = (20,0 ), pady = 20)
+
         self.subdel2Label = CTkLabel(master = self.deleteFrame, corner_radius=0, text = "Expense Name:", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
-        self.subdel2Label.grid(row  = 2, column = 0, sticky = 'w', pady = 10)
+        self.subdel2Label.grid(row  = 2, column = 0, sticky = 'w', pady = 20)
         self.subdel2Entry = CTkEntry(master = self.deleteFrame)
-        self.subdel2Entry.grid(row = 2, column = 2, padx = (20, 0), sticky = 'nsew')
+        self.subdel2Entry.grid(row = 2, column = 2, padx = (20, 0), sticky = 'nsew', pady = 20)
         self.subdel2Buttom = CTkButton(master = self.deleteFrame, text = "Delete", command = self.rmExp, width=100)
-        self.subdel2Buttom.grid(row = 2, column = 3, padx = (20,0 ))
+        self.subdel2Buttom.grid(row = 2, column = 3, padx = (20,0 ), pady = 20)
 
         self.TestFrame = CTkFrame(master = self.ebf, height = 50, width = (self.span),fg_color="transparent")
         self.TestFrame.grid(row = 6,column = 0, sticky = 'nsew', pady = (50,0))
@@ -452,7 +450,7 @@ class MainPage(CTk):
         if bal:
             connection = sqlite3.connect('data.db')
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM expenses WHERE subscription=?", [bal])
+            cursor.execute(f"DELETE FROM subs WHERE subscription =  '{bal}';")
             connection.commit()
             connection.close()
     def rmExp(self):
@@ -461,7 +459,7 @@ class MainPage(CTk):
         if bal:
             connection = sqlite3.connect('data.db')
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM expenses WHERE expense=?", [bal])
+            cursor.execute("DELETE FROM exp WHERE expense=?", [bal])
             connection.commit()
             connection.close()
     def changeSub(self):
@@ -486,6 +484,8 @@ class MainPage(CTk):
                 self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
                 self.subLabel2.grid(row = (x), column = 2, padx = (100, 0), sticky = "e")
             connection.commit()
+            connection.close
+
 
     def changeEx(self):
         price = self.ExpriceEntry.get()
