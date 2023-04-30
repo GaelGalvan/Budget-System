@@ -239,6 +239,7 @@ class MainPage(CTk):
 
 
 
+        # Home Tab Formatting
 
         self.savingsFrame = CTkFrame(master = self.HbF, height = 50, width = (self.span),fg_color="transparent")
         self.savingsFrame.grid(row = 1, column = 0, columnspan = 3, sticky = "nsew")
@@ -387,6 +388,9 @@ class MainPage(CTk):
         self.TestFrame.grid(row = 6,column = 0, sticky = 'nsew', pady = (50,0))
 
 
+        # Graphs Tab Formatting
+
+
         
         
     def selectFrame(self,name):
@@ -445,24 +449,62 @@ class MainPage(CTk):
         CTkLabel(master=self.myframe, text=f"Expenses: \n").grid(pady = 25, row=4, column=0)
         for i , expense in enumerate(expenses, 4):
             CTkLabel(master = self.myframe, text = f"{expense}").grid(row = i, column = 0)'''
+        
+    def refreshSubs(self):
+        self.subLabel1.destroy()
+        self.subLabel2.destroy()
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        self.expenseName = cursor.execute(f"SELECT subscription FROM subs WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expenseName):
+            self.subLabel1 = CTkLabel(self.subFrame, corner_radius=0, text = f"{name[0]}:", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.subLabel1.grid(row = (i), column = 0, sticky = "w")
+
+        self.balance = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
+        for x, money in enumerate(self.balance):
+            self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.subLabel2.grid(row = (x), column = 2, padx = (100, 0), sticky = "e")
+        connection.close()
+    def refreshExp(self):
+
+        self.expenseLabel1.destroy()
+        self.expenseLabel2.destroy()
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+
+        self.expenseName = cursor.execute(f"SELECT expense FROM exp WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expenseName):
+            self.expenseLabel1 = CTkLabel(self.expenseFrame, corner_radius=0, text = f"{name[0]}:", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.expenseLabel1.grid(row = (i), column = 0, sticky = "w")
+
+        self.balance = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
+        for x, money in enumerate(self.balance):
+            self.expenseLabel2 = CTkLabel(self.expenseFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
+            self.expenseLabel2.grid(row = (x), column = 2, padx = (100, 0), sticky = "e")
+        connection.close
+
     def rmSub(self):
-        bal = self.subdelEntry.get
+        bal = self.subdelEntry.get()
         self.subdelEntry.delete(0, 'end')
         if bal:
             connection = sqlite3.connect('data.db')
             cursor = connection.cursor()
-            cursor.execute(f"DELETE FROM subs WHERE subscription =  '{bal}';")
+            cursor.execute(f"DELETE FROM subs WHERE subscription = ? and username =?", (bal,self.user))
             connection.commit()
             connection.close()
+        self.refreshSubs()
+    
     def rmExp(self):
-        bal = self.subdel2Entry.get
+        bal = self.subdel2Entry.get()
         self.subdel2Entry.delete(0, 'end')
         if bal:
             connection = sqlite3.connect('data.db')
             cursor = connection.cursor()
-            cursor.execute("DELETE FROM exp WHERE expense=?", [bal])
+            cursor.execute("DELETE FROM exp WHERE expense=? and username =?", (bal,self.user))
             connection.commit()
             connection.close()
+        self.refreshExp()
+        
     def changeSub(self):
         price = self.priceEntry.get()
         name = self.nameEntry.get()
