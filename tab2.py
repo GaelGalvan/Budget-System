@@ -486,7 +486,7 @@ class MainPage(CTk):
 
         vals = np.array([float(self.balance), self.totalExPrice])
         labels = ["Monthly Income", "Total Expenses"]
-        explosion = [0.1, 0]
+        explosion = [0.3, 0]
         plt.pie(vals, labels = labels,explode = explosion, shadow = True, autopct='%1.1f%%')
         plt.show()
         connection.close()
@@ -497,14 +497,21 @@ class MainPage(CTk):
         cursor = connection.cursor()
         tarr1 = []
         tarr2 = []
+        explosion = []
+        valCount = 0
         self.subPrice = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
         for i, name in enumerate(self.subPrice):
             tarr1.append(name[0])
+            valCount += 1
 
+        explosion.extend([0.45 for i in range(valCount)])
+        valCount = 0
         self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
         for i, name in enumerate(self.expensePrice):
             tarr1.append(name[0])
+            valCount += 1
         
+        explosion.extend([0.3 for i in range(valCount)])
         self.subName = cursor.execute(f"SELECT subscription FROM subs WHERE username = '{self.user}';")
         for i, name in enumerate(self.subName):
             tarr2.append(name[0])
@@ -512,10 +519,12 @@ class MainPage(CTk):
         self.expenseName = cursor.execute(f"SELECT expense FROM exp WHERE username = '{self.user}';")
         for i, name in enumerate(self.expenseName):
             tarr2.append(name[0])
-
+    
+        
         expPriceArray = np.array(tarr1)
         expNameArray = np.array(tarr2)
-        plt.pie(expPriceArray, labels = expNameArray, shadow = True, autopct='%1.1f%%')
+        plt.pie(expPriceArray, labels = expNameArray, explode=explosion, shadow = True, autopct='%1.1f%%')
+        plt.title("Total Expenses")
         plt.show()
 
         connection.close()
