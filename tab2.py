@@ -69,10 +69,10 @@ class HomeTab(CTk):
         self.tabView2 = RightTabbing(master = self.tabLeftFrame, width= 300).grid(row = 1, column = 5, padx = (20,0), sticky = "nsew")
 
         #Start Button  
-        self.startImage = CTkImage(Image.open(os.path.join(image_path, "StartButton.png")), size=(150, 150))
+        self.startImage = CTkImage(Image.open(os.path.join(image_path, "startButton.png")), size=(150, 150))
         self.startFrame = CTkFrame(master = self, width = 0, height = 50)
         self.startFrame.grid_columnconfigure(2, weight = 1)
-        self.startFrame.grid(row = 3, column = 0, columnspan = 10, sticky = "NSEW")
+        self.startFrame.grid(row = 2, column = 0, columnspan = 10, sticky = "NSEW")
         self.startButton = CTkButton(master = self.startFrame,text="",image=self.startImage, command = self.start, width=100, fg_color="transparent")
         self.startButton.grid(row = 0, column = 2, padx = 20, pady = 20)
 
@@ -524,7 +524,6 @@ class MainPage(CTk):
         expPriceArray = np.array(tarr1)
         expNameArray = np.array(tarr2)
         plt.pie(expPriceArray, labels = expNameArray, explode=explosion, shadow = True, autopct='%1.1f%%')
-        plt.title("Total Expenses")
         plt.show()
 
         connection.close()
