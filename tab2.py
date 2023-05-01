@@ -219,7 +219,7 @@ class MainPage(CTk):
         # Formatting Home Frame
         self.HbF = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider), scrollbar_button_hover_color=theme)
         self.ebf = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider), scrollbar_button_hover_color=theme)
-        self.gbf =  CTkFrame(master = self, corner_radius=0, fg_color="transparent")
+        self.gbf = CTkScrollableFrame(master = self, corner_radius=0, fg_color="transparent", width = self.span, height=(self.y / slider), scrollbar_button_hover_color=theme)
 
         # Tabs
         self.user = user
@@ -307,7 +307,7 @@ class MainPage(CTk):
         for x, money in enumerate(self.balance):
             self.subLabel2 = CTkLabel(self.subFrame, corner_radius=0, text=f"${int(money[0]):,d}", text_color="white",font=CTkFont(family = "bookman", size=35, weight="bold"))
             self.subLabel2.grid(row = (x), column = 2, padx = (100, 0), sticky = "e")
-
+        connection.close()
         self.TestFrame = CTkFrame(master = self.HbF, height = 50, width = 0,fg_color="transparent")
         self.TestFrame.grid(row = 8,column = 5, sticky = 'nsew', pady = (50,0))
 
@@ -389,9 +389,28 @@ class MainPage(CTk):
 
 
         # Graphs Tab Formatting
+        self.graphTFrame = CTkFrame(master = self.gbf, height = 50, width = (self.span),fg_color="transparent")
+        self.graphTFrame.grid(row = 0, column = 0, sticky = 'nsew', pady = 10)
 
+        self.graphTitle = CTkLabel(master = self.graphTFrame, corner_radius=0, text = "Select A Graph To Observe", text_color="white",font=CTkFont(family = "bookman", size=25, weight="bold"))
+        self.graphTitle.grid(row = 0, column = 5, sticky = 'nsew', pady = 20, padx = (self.span / 2.75))
 
-        
+        self.graphBFrame = CTkFrame(master = self.gbf, height = 50, width = (self.span),fg_color="transparent")
+        self.graphBFrame.grid(row = 1, column = 0, sticky = 'nsew', pady = 10)
+
+        self.graph1Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Income vs Expenses", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.graph1Label.grid(row = 0, column = 0, sticky = 'nsew', pady = (20,0) , padx = 100)
+        self.graph2Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Overall Expenses", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.graph2Label.grid(row = 0, column = 1, sticky = 'nsew', pady = (20,0), padx = 100)
+        self.graph3Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Balance vs Expenses", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.graph3Label.grid(row = 0, column = 2, sticky = 'nsew', pady = (20,0), padx = 100)
+
+        self.graph1Button = CTkButton(master = self.graphBFrame,command = self.graph1, text = "Select", width=100)
+        self.graph1Button.grid(row = 1, column = 0, sticky = 'nsew', pady = 10, padx = 100)
+        self.graph2Button = CTkButton(master = self.graphBFrame,command = self.graph2, text = "Select", width=100)
+        self.graph2Button.grid(row = 1, column = 1, sticky = 'nsew', pady = 10, padx = 100)
+        self.graph3Button = CTkButton(master = self.graphBFrame,command = self.graph3, text = "Select", width=100)
+        self.graph3Button.grid(row = 1, column = 2, sticky = 'nsew', pady = 10, padx = 100)
         
     def selectFrame(self,name):
         self.homeButton.configure(fg_color=(theme) if name == "home" else "transparent")
@@ -421,7 +440,7 @@ class MainPage(CTk):
 
         
         # CTkLabel(master=self.myframe, text=f" Account balance \n ${'{:.2f}'.format(self.balance)}").grid(row=0, column=0)
-        
+    
 
     
         
@@ -450,6 +469,82 @@ class MainPage(CTk):
         for i , expense in enumerate(expenses, 4):
             CTkLabel(master = self.myframe, text = f"{expense}").grid(row = i, column = 0)'''
         
+    def graph1(self):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        self.totalExPrice = 0
+        self.subPrice = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
+        for i, name in enumerate(self.subPrice):
+            self.totalExPrice += name[0]
+        self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
+        for x, name in enumerate(self.expensePrice):
+            self.totalExPrice += name[0]
+
+        self.balance = cursor.execute(f"SELECT monthlyIncome FROM userInfo WHERE username = '{self.user}';")
+        self.balance = self.balance = cursor.fetchone()[0]
+
+
+        vals = np.array([float(self.balance), self.totalExPrice])
+        labels = ["Monthly Income", "Total Expenses"]
+        explosion = [0.1, 0]
+        plt.pie(vals, labels = labels,explode = explosion, shadow = True, autopct='%1.1f%%')
+        plt.show()
+        connection.close()
+
+    def graph2(self):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        tarr1 = []
+        tarr2 = []
+        self.subPrice = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
+        for i, name in enumerate(self.subPrice):
+            tarr1.append(name[0])
+
+        self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expensePrice):
+            tarr1.append(name[0])
+        
+        self.subName = cursor.execute(f"SELECT subscription FROM subs WHERE username = '{self.user}';")
+        for i, name in enumerate(self.subName):
+            tarr2.append(name[0])
+        
+        self.expenseName = cursor.execute(f"SELECT expense FROM exp WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expenseName):
+            tarr2.append(name[0])
+
+        expPriceArray = np.array(tarr1)
+        expNameArray = np.array(tarr2)
+        plt.pie(expPriceArray, labels = expNameArray, shadow = True, autopct='%1.1f%%')
+        plt.show()
+
+        connection.close()
+            
+    
+    def graph3(self):
+        connection = sqlite3.connect('data.db')
+        cursor = connection.cursor()
+        self.totalExPrice = 0
+        self.subPrice = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
+        for i, name in enumerate(self.subPrice):
+            self.totalExPrice += name[0]
+        self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
+        for x, name in enumerate(self.expensePrice):
+            self.totalExPrice += name[0]
+
+        self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
+        self.balance = self.balance = cursor.fetchone()[0]
+
+
+        vals = np.array([float(self.balance), self.totalExPrice])
+        labels = ["Balance", "Total Expenses"]
+        explosion = [0.1, 0]
+        plt.pie(vals, labels = labels,explode = explosion, shadow = True, autopct='%1.1f%%')
+        plt.show()
+        connection.close()
+
+
+
+
     def refreshSubs(self):
         self.subLabel1.destroy()
         self.subLabel2.destroy()
@@ -646,4 +741,3 @@ class MainPage(CTk):
         
         connection.close()
 
-        #Hello 
