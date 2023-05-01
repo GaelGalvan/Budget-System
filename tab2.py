@@ -96,7 +96,7 @@ class LeftTabbing(CTkTabview):
         self.textbox = CTkTextbox(master = self.tab("Home"), width=250, height = 350)
         
         self.textbox.grid(row=0, column = 0, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        with open('Text\\Home_Text.txt', 'r' ) as x:
+        with open('Text/Home_Text.txt', 'r' ) as x:
             Text = x.read()
             self.textbox.insert("0.0",Text)
         self.textbox.configure(state = "disabled")
@@ -170,7 +170,7 @@ class RightTabbing(CTkTabview):
         self.textbox = CTkTextbox(master = self.tab("Purpose"), width=250, height = 350)
         
         self.textbox.grid(row=0, column = 0, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        with open('Text\\Purpose_Text.txt', 'r' ) as x:
+        with open('Text/Purpose_Text.txt', 'r' ) as x:
             Text = x.read()
             self.textbox.insert("0.0",Text)
         self.textbox.configure(state = "disabled")
