@@ -556,7 +556,7 @@ class MainPage(CTk):
 
         cmap = plt.colormaps["tab20c"]
         outer_colors = cmap(np.arange(3)*4)
-        inner_colors = cmap([1, 2, 5, 6, 9, 10])
+        inner_colors = cmap(np.arange(3)*4)
         
         self.needarr = np.array([50,30,20])
 
