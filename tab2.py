@@ -553,7 +553,7 @@ class MainPage(CTk):
         self.needarr = np.array([50,30,20])
 
         ax.pie(self.pArr, labels = self.nArr, pctdistance=0.85, radius = 1, colors=outer_colors, wedgeprops=dict(width = 0.3, edgecolor = 'w'), autopct='%1.1f%%')
-        ax.pie(self.needarr, colors=inner_colors, autopct='%1.1f%%', pctdistance=0.85,radius = 1 - 0.3, wedgeprops=dict(width = 0.3, edgecolor = 'w'))
+        ax.pie(self.needarr, colors=inner_colors, autopct='%1.1f%%', pctdistance=0.75,radius = 1 - 0.3, wedgeprops=dict(width = 0.3, edgecolor = 'w'))
         
         ax.set(aspect = "equal", title = "50/30/20 Budget Rule")
         plt.show()
