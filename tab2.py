@@ -402,7 +402,7 @@ class MainPage(CTk):
         self.graph1Label.grid(row = 0, column = 0, sticky = 'nsew', pady = (20,0) , padx = 100)
         self.graph2Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Overall Expenses", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
         self.graph2Label.grid(row = 0, column = 1, sticky = 'nsew', pady = (20,0), padx = 100)
-        self.graph3Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Balance vs Expenses", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
+        self.graph3Label = CTkLabel(master = self.graphBFrame, corner_radius=0, text = "Budgeting Overview", text_color="white",font=CTkFont(family = "bookman", size=20, weight="bold"))
         self.graph3Label.grid(row = 0, column = 2, sticky = 'nsew', pady = (20,0), padx = 100)
 
         self.graph1Button = CTkButton(master = self.graphBFrame,command = self.graph1, text = "Select", width=100)
@@ -491,6 +491,7 @@ class MainPage(CTk):
         plt.show()
         connection.close()
 
+    # Total Expenses Comparison 
     def graph2(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
@@ -519,27 +520,44 @@ class MainPage(CTk):
 
         connection.close()
             
-    
+    # 50 (expenses) , 30(subs / balance) , 20(savings) rule
     def graph3(self):
         connection = sqlite3.connect('data.db')
         cursor = connection.cursor()
-        self.totalExPrice = 0
+        self.expPrice = 0
+        self.subs_balPrice = 0
+        self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
+        for i, name in enumerate(self.expensePrice):
+             self.expPrice += name[0]
+
         self.subPrice = cursor.execute(f"SELECT subscription_price FROM subs WHERE username = '{self.user}';")
         for i, name in enumerate(self.subPrice):
-            self.totalExPrice += name[0]
-        self.expensePrice = cursor.execute(f"SELECT expense_price FROM exp WHERE username = '{self.user}';")
-        for x, name in enumerate(self.expensePrice):
-            self.totalExPrice += name[0]
+            self.subs_balPrice += name[0]
 
-        self.balance = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
-        self.balance = self.balance = cursor.fetchone()[0]
+        self.savings = cursor.execute(f"SELECT SavingBalance FROM userInfo WHERE username = '{self.user}';")
+        self.savings = cursor.fetchone()[0]
+        bal = cursor.execute(f"SELECT accountBalance FROM userInfo WHERE username = '{self.user}';")
+        bal = cursor.fetchone()[0]
+        self.subs_balPrice += bal
+
+        self.pArr = np.array([self.expPrice, self.subs_balPrice,self.savings])
+        self.nArr = np.array(["Needs","Wants","Savings"])
 
 
-        vals = np.array([float(self.balance), self.totalExPrice])
-        labels = ["Balance", "Total Expenses"]
-        explosion = [0.1, 0]
-        plt.pie(vals, labels = labels,explode = explosion, shadow = True, autopct='%1.1f%%')
+        fig, ax = plt.subplots()
+
+        cmap = plt.colormaps["tab20c"]
+        outer_colors = cmap(np.arange(3)*4)
+        inner_colors = cmap([1, 2, 5, 6, 9, 10])
+        
+        self.needarr = np.array([50,30,20])
+
+        ax.pie(self.pArr, labels = self.nArr, pctdistance=0.85, radius = 1, colors=outer_colors, wedgeprops=dict(width = 0.3, edgecolor = 'w'), autopct='%1.1f%%')
+        ax.pie(self.needarr, colors=inner_colors, autopct='%1.1f%%', pctdistance=0.85,radius = 1 - 0.3, wedgeprops=dict(width = 0.3, edgecolor = 'w'))
+        
+        ax.set(aspect = "equal", title = "50/30/20 Budget Rule")
         plt.show()
+
         connection.close()
 
 
